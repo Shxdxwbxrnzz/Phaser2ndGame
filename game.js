@@ -82,11 +82,13 @@ this.load.spritesheet('dude',
 //Додаємо спрайти до сцени
 function create() {
     //Платформи
-this.add.image(950, 550, 'sky').setScale(1.1);
+this.add.image(950, 550, 'sky').setScale(1.1).setScrollFactor(1);
+this.mode = 1; // 0 = direct, 1 = physics
+this.directSpeed = 4.5;
 
 platforms = this.physics.add.staticGroup();
 platforms.create(50, 300, 'ground').setScale(0.2).refreshBody();
-platforms.create(100, 300, 'ground').setScale(0.2).refreshBody();
+platforms.create(150, 300, 'ground').setScale(0.2).refreshBody();
 platforms.create(2000, 300, 'ground').setScale(0.2).refreshBody();
 platforms.create(2800, 300, 'ground').setScale(0.2).refreshBody();
 
@@ -146,7 +148,7 @@ this.physics.add.collider(player, platforms);
     child.setScale(0.1,0.1);
     });
 
-    this.cameras.main.setBounds(0, 0, 1024, 2048);
+   
     this.cameras.main.startFollow(this.player, true);
     //this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
     this.cameras.main.setZoom(2);
