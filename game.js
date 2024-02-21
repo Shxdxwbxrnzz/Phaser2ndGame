@@ -89,8 +89,9 @@ this.directSpeed = 4.5;
 platforms = this.physics.add.staticGroup();
 platforms.create(50, 300, 'ground').setScale(0.2).refreshBody();
 platforms.create(150, 300, 'ground').setScale(0.2).refreshBody();
-platforms.create(2000, 300, 'ground').setScale(0.2).refreshBody();
-platforms.create(2800, 300, 'ground').setScale(0.2).refreshBody();
+platforms.create(200, 300, 'ground').setScale(0.2).refreshBody();
+platforms.create(280, 300, 'ground').setScale(0.2).refreshBody();
+platforms.create(280, 300, 'ground').setScale(0.2).refreshBody();
 
 //Гравець
 player = this.physics.add.sprite(100, 150, 'dude');
@@ -147,16 +148,6 @@ this.physics.add.collider(player, platforms);
     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     child.setScale(0.1,0.1);
     });
-
-   
-    this.cameras.main.startFollow(this.player, true);
-    //this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
-    this.cameras.main.setZoom(2);
-
-
-
-
-
 
 }
 
