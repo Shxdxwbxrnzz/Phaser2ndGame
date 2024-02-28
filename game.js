@@ -21,109 +21,74 @@ var config = {
 var game = new Phaser.Game(config);
 var score = 0;
 var scoreText;
-function hitBomb(player, bomb) {
-    this.physics.pause();
-
-    player.setTint(0xff0000);
-
-    player.anims.play('turn');
-
-    this.add.image(400, 300, 'result').setScale(0.5);
-
-    gameOver = true;
-}
-//Функція збору зірок
-function collectStar(player, star) {
-    star.disableBody(true, true);
-    if (stars.countActive(true) === 0) {
-    score += 1;
-    scoreText.setText('Level: ' + score);
-    }
+var worldWidth = 10000;
+var worldHeight = 1080;
 
 
-    if (stars.countActive(true) === 0) {
-        stars.children.iterate(function (child) {
-
-            child.enableBody(true, child.x, 0, true, true);
-
-        });
-        var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-    var bomb = bombs.create(x, 16, 'bomb');
-    bomb.setBounce(1);
-    bomb.setCollideWorldBounds(true);
-    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-    var bomb = bombs.create(x, 16, 'bomb');
-    bomb.setBounce(1);
-    bomb.setCollideWorldBounds(true);
-    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-
-
-
-    }
-
-}
 
 
 function preload() {
-    //Додаємо клавіші керування
+    // //Додаємо клавіші керування
     cursors = this.input.keyboard.createCursorKeys();
-//Завантажуємо спрайти
-this.load.image('sky', 'assets/sky.png');
-this.load.image('ground', 'assets/platform.png');
-this.load.image('star', 'assets/star.png');
-this.load.image('result', 'assets/result.png');
-this.load.image('bomb', 'assets/bomb.png');
-this.load.spritesheet('dude',
-    'assets/dude.png',
-    { frameWidth: 32, frameHeight: 48 }
-);
+    //Завантажуємо спрайти
+    this.load.image('sky', 'assets/sky.png');
+    this.load.image('ground', 'assets/platform.png');
+    this.load.image('star', 'assets/star.png');
+    this.load.image('result', 'assets/result.png');
+    this.load.image('fon', 'assets/fon.png');
+    this.load.image('bomb', 'assets/bomb.png');
+    this.load.spritesheet('dude',
+        'assets/dude.png',
+        { frameWidth: 32, frameHeight: 48 }
+    );
 }
 //Додаємо спрайти до сцени
 function create() {
-    //Платформи
-this.add.image(950, 550, 'sky').setScale(1.1).setScrollFactor(1);
-this.mode = 1; // 0 = direct, 1 = physics
-this.directSpeed = 4.5;
 
-platforms = this.physics.add.staticGroup();
-platforms.create(50, 300, 'ground').setScale(0.2).refreshBody();
-platforms.create(150, 300, 'ground').setScale(0.2).refreshBody();
-platforms.create(200, 300, 'ground').setScale(0.2).refreshBody();
-platforms.create(280, 300, 'ground').setScale(0.2).refreshBody();
-platforms.create(280, 300, 'ground').setScale(0.2).refreshBody();
+    //this.add.image(500, 300, 'sky').setScale(0.5).setScrollFactor(1);
+    this.add.tileSprite(0, 0, worldWidth, worldHeight, 'sky').setOrigin(0,0);
+    this.mode = 1; // 0 = direct, 1 = physics
+    //this.directSpeed = 4.5;
 
-//Гравець
-player = this.physics.add.sprite(100, 150, 'dude');
+    platforms = this.physics.add.staticGroup();
+   // platforms.create(0, 1000, 'ground').setOrigin(0, 0).setScale(1).refreshBody();
+    for (var x = 0; x < worldWidth; x = x + 759) {
+        console.log(x)
+       platforms.create(x, 970, 'ground').setOrigin(0, 0).refreshBody();
+    }
 
 
-
-player.setBounce(0.2);
-player.setCollideWorldBounds(true);
-player.body.setGravityY(300);
+    //Гравець
+    player = this.physics.add.sprite(300, 150, 'dude');
 
 
 
-this.anims.create({
-    key: 'left',
-    frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-    frameRate: 10,
-    repeat: -1
-});
+    player.setBounce(0.2);
+    player.setCollideWorldBounds(true);
+    player.body.setGravityY(300);
 
-this.anims.create({
-    key: 'turn',
-    frames: [{ key: 'dude', frame: 4 }],
-    frameRate: 20
-});
 
-this.anims.create({
-    key: 'right',
-    frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-    frameRate: 10,
-    repeat: -1
-});
-this.physics.add.collider(player, platforms);
+
+    this.anims.create({
+        key: 'left',
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+    this.anims.create({
+        key: 'turn',
+        frames: [{ key: 'dude', frame: 4 }],
+        frameRate: 20
+    });
+
+    this.anims.create({
+        key: 'right',
+        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frameRate: 10,
+        repeat: -1
+    });
+    this.physics.add.collider(player, platforms);
     bombs = this.physics.add.group();
 
     this.physics.add.collider(bombs, platforms);
@@ -145,9 +110,13 @@ this.physics.add.collider(player, platforms);
     this.physics.add.overlap(player, stars, collectStar, null, this);
 
     stars.children.iterate(function (child) {
-    child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-    child.setScale(0.1,0.1);
+        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+        child.setScale(0.1, 0.1);
     });
+
+    this.cameras.main.setBounds(0, 0, 1920, 1080);
+    this.cameras.main.startFollow(player);
+    this.cameras.main.setZoom(1);
 
 }
 
@@ -173,4 +142,47 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(-520);
     }
+}
+
+function hitBomb(player, bomb) {
+    this.physics.pause();
+
+    player.setTint(0xff0000);
+
+    player.anims.play('turn');
+
+    this.add.image(400, 300, 'result').setScale(0.5);
+
+    gameOver = true;
+}
+//Функція збору зірок
+function collectStar(player, star) {
+    star.disableBody(true, true);
+    if (stars.countActive(true) === 0) {
+        score += 1;
+        scoreText.setText('Level: ' + score);
+    }
+
+
+    if (stars.countActive(true) === 0) {
+        stars.children.iterate(function (child) {
+
+            child.enableBody(true, child.x, 0, true, true);
+
+        });
+        var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
+        var bomb = bombs.create(x, 16, 'bomb');
+        bomb.setBounce(1);
+        bomb.setCollideWorldBounds(true);
+        bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+        var bomb = bombs.create(x, 16, 'bomb');
+        bomb.setBounce(1);
+        bomb.setCollideWorldBounds(true);
+        bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+
+
+
+    }
+
 }
