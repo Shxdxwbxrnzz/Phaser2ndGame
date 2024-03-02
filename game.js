@@ -1,7 +1,7 @@
 //Створюємо сцену
 var config = {
     type: Phaser.AUTO,
-    width: 1920,
+    width: 2500,
     height: 1080,
     physics: {
         default: 'arcade',
@@ -28,7 +28,7 @@ var worldHeight = 1080;
 
 
 function preload() {
-    // //Додаємо клавіші керування
+    //Додаємо клавіші керування
     cursors = this.input.keyboard.createCursorKeys();
     //Завантажуємо спрайти
     this.load.image('sky', 'assets/sky.png');
@@ -37,6 +37,7 @@ function preload() {
     this.load.image('result', 'assets/result.png');
     this.load.image('fon', 'assets/fon.png');
     this.load.image('bomb', 'assets/bomb.png');
+    this.load.image('dirt', 'assets/dirt.png');
     this.load.spritesheet('dude',
         'assets/dude.png',
         { frameWidth: 32, frameHeight: 48 }
@@ -48,18 +49,24 @@ function create() {
     //this.add.image(500, 300, 'sky').setScale(0.5).setScrollFactor(1);
     this.add.tileSprite(0, 0, worldWidth, worldHeight, 'sky').setOrigin(0,0);
     this.mode = 1; // 0 = direct, 1 = physics
-    //this.directSpeed = 4.5;
+    this.directSpeed = 4.5;
 
     platforms = this.physics.add.staticGroup();
    // platforms.create(0, 1000, 'ground').setOrigin(0, 0).setScale(1).refreshBody();
-    for (var x = 0; x < worldWidth; x = x + 759) {
+    for (var x = 0; x < worldWidth; x = x + 120) {
         console.log(x)
-       platforms.create(x, 970, 'ground').setOrigin(0, 0).refreshBody();
+       platforms.create(x, 870, 'ground').setScale(0.2).setOrigin(0, 0).refreshBody();
+    };
+
+    dirt = this.physics.add.staticGroup();
+    for (var x = 0; x < worldWidth; x = x + 500) {
+        console.log(x)
+       dirt.create(x, 890, 'dirt').setScale(1).setOrigin(0, 0).refreshBody();
     }
 
 
     //Гравець
-    player = this.physics.add.sprite(300, 150, 'dude');
+    player = this.physics.add.sprite(1000, 150, 'dude');
 
 
 
@@ -89,6 +96,7 @@ function create() {
         repeat: -1
     });
     this.physics.add.collider(player, platforms);
+    this.physics.add.collider(player, dirt);
     bombs = this.physics.add.group();
 
     this.physics.add.collider(bombs, platforms);
@@ -114,7 +122,7 @@ function create() {
         child.setScale(0.1, 0.1);
     });
 
-    this.cameras.main.setBounds(0, 0, 1920, 1080);
+    this.cameras.main.setBounds(0, 0, 10000, 1080);
     this.cameras.main.startFollow(player);
     this.cameras.main.setZoom(1);
 
