@@ -1,7 +1,7 @@
 //Створюємо сцену
 var config = {
     type: Phaser.AUTO,
-    width: 2500,
+    width: 1920,
     height: 1080,
     physics: {
         default: 'arcade',
@@ -21,7 +21,7 @@ var config = {
 var game = new Phaser.Game(config);
 var score = 0;
 var scoreText;
-var worldWidth = 10000;
+var worldWidth = 9600;
 var worldHeight = 1080;
 
 
@@ -38,6 +38,11 @@ function preload() {
     this.load.image('fon', 'assets/fon.png');
     this.load.image('bomb', 'assets/bomb.png');
     this.load.image('dirt', 'assets/dirt.png');
+    this.load.image('platform2', 'assets/platform2.png');
+    this.load.image('bush1', 'assets/bush1.png');
+    this.load.image('bush2', 'assets/bush2.png');
+    this.load.image('tree', 'assets/tree.png');
+    this.load.image('rock', 'assets/rock.png');
     this.load.spritesheet('dude',
         'assets/dude.png',
         { frameWidth: 32, frameHeight: 48 }
@@ -46,36 +51,51 @@ function preload() {
 //Додаємо спрайти до сцени
 function create() {
 
-    //this.add.image(500, 300, 'sky').setScale(0.5).setScrollFactor(1);
-    this.add.tileSprite(0, 0, worldWidth, worldHeight, 'sky').setOrigin(0,0);
-    this.mode = 1; // 0 = direct, 1 = physics
+    //Додаємо фон
+    this.add.tileSprite(0, -720, worldWidth, worldHeight, 'sky').setScale(2).setOrigin(0,0);
+    this.mode = 1; 
     this.directSpeed = 4.5;
 
-    platforms = this.physics.add.staticGroup();
-   // platforms.create(0, 1000, 'ground').setOrigin(0, 0).setScale(1).refreshBody();
-    for (var x = 0; x < worldWidth; x = x + 120) {
-        console.log(x)
-       platforms.create(x, 870, 'ground').setScale(0.2).setOrigin(0, 0).refreshBody();
+    //Кущі
+    bush1 = this.physics.add.staticGroup();
+    for (var x = 0; x < worldWidth; x = x + (Phaser.Math.Between(200,400))) {
+        bush1.create(x, 950, 'bush1').setScale(0.2).setOrigin(0, 1).refreshBody();
     };
 
+    //Дерева
+    tree = this.physics.add.staticGroup();
+    for (var x = 0; x < worldWidth; x = x + (Phaser.Math.Between(500, 1000))) {
+        tree.create(x, 930, 'tree').setScale(0.15).setOrigin(0, 1).refreshBody();
+    };
+
+    //Каміння
+    rock = this.physics.add.staticGroup();
+    for (var x = 0; x < worldWidth; x = x + (Phaser.Math.Between(400,800))) {
+        bush1.create(x, 940, 'rock').setScale(0.15).setOrigin(0, 1).refreshBody();
+    };
+
+    //Земля
+    platforms = this.physics.add.staticGroup();
+    for (var x = 0; x < worldWidth; x = x + 120) {
+        console.log(x)
+       platforms.create(x, 930, 'ground').setScale(0.2).setOrigin(0, 0).refreshBody();
+    };
+
+    //Земля
     dirt = this.physics.add.staticGroup();
     for (var x = 0; x < worldWidth; x = x + 500) {
         console.log(x)
-       dirt.create(x, 890, 'dirt').setScale(1).setOrigin(0, 0).refreshBody();
+       dirt.create(x, 950, 'dirt').setScale(1.8).setOrigin(0, 0).refreshBody();
     }
-
-
+ 
     //Гравець
-    player = this.physics.add.sprite(1000, 150, 'dude');
-
-
-
+    player = this.physics.add.sprite(50, 150, 'dude');
     player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
-    player.body.setGravityY(300);
+    player.setCollideWorldBounds(false);
+    player.body.setGravityY(400);
 
 
-
+    //Створення анімації
     this.anims.create({
         key: 'left',
         frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
@@ -95,6 +115,8 @@ function create() {
         frameRate: 10,
         repeat: -1
     });
+
+    //Додаємо коллізію гравцю та об'єктам
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(player, dirt);
     bombs = this.physics.add.group();
@@ -103,6 +125,8 @@ function create() {
 
     this.physics.add.collider(player, bombs, hitBomb, null, this);
 
+
+    //Додаємо надпис рекорду
     scoreText = this.add.text(16, 16, 'Level: 0', { fontSize: '32px', fill: '#000' });
 
 
@@ -124,7 +148,7 @@ function create() {
 
     this.cameras.main.setBounds(0, 0, 10000, 1080);
     this.cameras.main.startFollow(player);
-    this.cameras.main.setZoom(1);
+    this.cameras.main.setZoom(1.1);
 
 }
 
@@ -149,6 +173,10 @@ function update() {
 
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(-520);
+    }
+    //Обмежує випадання за світ
+    if(player.x < 20){
+        player.x = 20
     }
 }
 
