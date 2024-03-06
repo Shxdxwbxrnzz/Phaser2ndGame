@@ -19,9 +19,11 @@ var config = {
 
 
 var game = new Phaser.Game(config);
+
+var player;
 var score = 0;
 var scoreText;
-var worldWidth = 9600;
+var worldWidth = config.width * 5;
 var worldHeight = 1080;
 
 
@@ -43,6 +45,13 @@ function preload() {
     this.load.image('bush2', 'assets/bush2.png');
     this.load.image('tree', 'assets/tree.png');
     this.load.image('rock', 'assets/rock.png');
+    this.load.image('block1', 'assets/block1.png');
+    this.load.image('block2', 'assets/block3.png');
+    this.load.image('block3', 'assets/block3.png');
+    this.load.image('cloud1', 'assets/cloud1.png');
+    this.load.image('cloud2', 'assets/cloud2.png');
+
+
     this.load.spritesheet('dude',
         'assets/dude.png',
         { frameWidth: 32, frameHeight: 48 }
@@ -52,45 +61,79 @@ function preload() {
 function create() {
 
     //Додаємо фон
-    this.add.tileSprite(0, -720, worldWidth, worldHeight, 'sky').setScale(2).setOrigin(0,0);
+    this.add.tileSprite(0, 0, worldWidth, worldHeight, 'sky')
+       .setScale(1)
+       .setOrigin(0,0)
+       .setDepth(0);
     this.mode = 1; 
     this.directSpeed = 4.5;
 
     //Кущі
     bush1 = this.physics.add.staticGroup();
     for (var x = 0; x < worldWidth; x = x + (Phaser.Math.Between(200,400))) {
-        bush1.create(x, 950, 'bush1').setScale(0.2).setOrigin(0, 1).refreshBody();
+        bush1.create(x, 950, 'bush1')
+           .setScale(0.2)
+           .setOrigin(0, 1)
+           .refreshBody()
+           .setDepth((Phaser.Math.Between(1,2)));
+    };
+
+    //Хмари 
+    cloud1 = this.physics.add.staticGroup();
+    for (var x = 0; x < worldWidth; x = x + (Phaser.Math.Between(200,400))) {
+        cloud1.create(x, (Phaser.Math.Between(300,550)), 'cloud1')
+           .setScale(0.2)
+           .setOrigin(0, 1)
+           .refreshBody()
+           .setDepth(1);
     };
 
     //Дерева
     tree = this.physics.add.staticGroup();
     for (var x = 0; x < worldWidth; x = x + (Phaser.Math.Between(500, 1000))) {
-        tree.create(x, 930, 'tree').setScale(0.15).setOrigin(0, 1).refreshBody();
+        tree.create(x, 930, 'tree')
+           .setScale(0.15)
+           .setOrigin(0, 1)
+           .refreshBody()
+           .setDepth((Phaser.Math.Between(1,2)));
     };
 
     //Каміння
     rock = this.physics.add.staticGroup();
     for (var x = 0; x < worldWidth; x = x + (Phaser.Math.Between(400,800))) {
-        bush1.create(x, 940, 'rock').setScale(0.15).setOrigin(0, 1).refreshBody();
+        bush1.create(x, 940, 'rock')
+           .setScale(0.15)
+           .setOrigin(0, 1)
+           .refreshBody()
+           .setDepth((Phaser.Math.Between(1,2)));
     };
 
-    //Земля
+    //Земля і трава
     platforms = this.physics.add.staticGroup();
     for (var x = 0; x < worldWidth; x = x + 120) {
         console.log(x)
-       platforms.create(x, 930, 'ground').setScale(0.2).setOrigin(0, 0).refreshBody();
+       platforms.create(x, 930, 'ground')
+          .setScale(0.2)
+          .setOrigin(0, 0)
+          .refreshBody()
+          .setDepth(3);
     };
 
-    //Земля
+    //Земля нижче трави
     dirt = this.physics.add.staticGroup();
     for (var x = 0; x < worldWidth; x = x + 500) {
         console.log(x)
-       dirt.create(x, 950, 'dirt').setScale(1.8).setOrigin(0, 0).refreshBody();
+       dirt.create(x, 950, 'dirt')
+          .setScale(1.8)
+          .setOrigin(0, 0)
+          .refreshBody()
+          .setDepth(2);
     }
  
     //Гравець
     player = this.physics.add.sprite(50, 150, 'dude');
     player.setBounce(0.2);
+    player.setDepth(5);
     player.setCollideWorldBounds(false);
     player.body.setGravityY(400);
 
@@ -132,7 +175,6 @@ function create() {
 
     stars = this.physics.add.group({
         key: 'star',
-
         repeat: 11,
         setXY: { x: 12, y: 0, stepX: 70 }
 
@@ -143,7 +185,8 @@ function create() {
 
     stars.children.iterate(function (child) {
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-        child.setScale(0.1, 0.1);
+        child.setScale(0.08, 0.08);
+        child.setDepth(5);
     });
 
     this.cameras.main.setBounds(0, 0, 10000, 1080);
