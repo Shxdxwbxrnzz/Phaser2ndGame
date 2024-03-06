@@ -88,6 +88,23 @@ function create() {
            .setDepth(1);
     };
 
+    //блок1 
+    block1 = this.physics.add.staticGroup();
+        block1.create(200, 800, 'block1')
+           .setScale(0.2)
+           .setOrigin(0, 1)
+           .refreshBody()
+           .setDepth(3);
+
+    //блок3
+    block3 = this.physics.add.staticGroup();
+    block3.create(230, 800, 'block3')
+       .setScale(0.2)
+       .setOrigin(0, 1)
+       .refreshBody()
+       .setDepth(3);
+    
+
     //Дерева
     tree = this.physics.add.staticGroup();
     for (var x = 0; x < worldWidth; x = x + (Phaser.Math.Between(500, 1000))) {
@@ -165,7 +182,7 @@ function create() {
     bombs = this.physics.add.group();
 
     this.physics.add.collider(bombs, platforms);
-
+    this.physics.add.collider(block1, player);
     this.physics.add.collider(player, bombs, hitBomb, null, this);
 
 
