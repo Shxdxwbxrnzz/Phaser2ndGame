@@ -7,7 +7,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: false
+            debug: true
         }
     },
     scene: {
@@ -46,7 +46,7 @@ function preload() {
     this.load.image('tree', 'assets/tree.png');
     this.load.image('rock', 'assets/rock.png');
     this.load.image('block1', 'assets/block1.png');
-    this.load.image('block2', 'assets/block3.png');
+    this.load.image('block2', 'assets/block2.png');
     this.load.image('block3', 'assets/block3.png');
     this.load.image('cloud1', 'assets/cloud1.png');
     this.load.image('cloud2', 'assets/cloud2.png');
@@ -101,23 +101,54 @@ function create() {
     block2 = this.physics.add.staticGroup()
     block3 = this.physics.add.staticGroup()
     var j = (Phaser.Math.Between(400,800))
-    var i = (Phaser.Math.Between(0,3))
+    var i = (Phaser.Math.Between(1,3))
     for (var x = 100; x < worldWidth; x = x + j) {
         var u = (Phaser.Math.Between(600,800));
-        if (i = 0) {
+        if (i = 2) {
             block1.create(x, u, 'block1')
             .setScale(0.2)
             .setOrigin(0, 1)
             .refreshBody()
             .setDepth(4);
-         block3.create(x + 30, u , 'block3')
+            block2.create(x + 30, u, 'block2')
+            .setScale(0.2)
+            .setOrigin(0, 1)
+            .refreshBody()
+            .setDepth(4);
+
+         block3.create(x + 80, u , 'block3')
             .setScale(0.2)
             .setOrigin(0, 1)
             .refreshBody()
             .setDepth(4);
         };
 
-        if (i = 0) {
+        if (i = 3) {
+            block1.create(x, u, 'block1')
+            .setScale(0.2)
+            .setOrigin(0, 1)
+            .refreshBody()
+            .setDepth(4);
+            block2.create(x + 30, u, 'block2')
+            .setScale(0.2)
+            .setOrigin(0, 1)
+            .refreshBody()
+            .setDepth(4);
+
+            block2.create(x + 60, u, 'block2')
+            .setScale(0.2)
+            .setOrigin(0, 1)
+            .refreshBody()
+            .setDepth(4);
+
+         block3.create(x + 110, u , 'block3')
+            .setScale(0.2)
+            .setOrigin(0, 1)
+            .refreshBody()
+            .setDepth(4);
+        };
+
+        if (i = 1) {
             block1.create(x, u, 'block1')
             .setScale(0.2)
             .setOrigin(0, 1)
