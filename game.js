@@ -88,21 +88,49 @@ function create() {
            .setDepth(1);
     };
 
-    //блок1 
-    block1 = this.physics.add.staticGroup();
-        block1.create(200, 800, 'block1')
-           .setScale(0.2)
-           .setOrigin(0, 1)
-           .refreshBody()
-           .setDepth(3);
-
     //блок3
     block3 = this.physics.add.staticGroup();
-    block3.create(230, 800, 'block3')
+    block3.create(230, 400, 'block3')
        .setScale(0.2)
        .setOrigin(0, 1)
        .refreshBody()
        .setDepth(3);
+       
+    //Рандомні платформи
+    block1 = this.physics.add.staticGroup()
+    block2 = this.physics.add.staticGroup()
+    block3 = this.physics.add.staticGroup()
+    var j = (Phaser.Math.Between(400,800))
+    var i = (Phaser.Math.Between(0,3))
+    for (var x = 100; x < worldWidth; x = x + j) {
+        var u = (Phaser.Math.Between(600,800));
+        if (i = 0) {
+            block1.create(x, u, 'block1')
+            .setScale(0.2)
+            .setOrigin(0, 1)
+            .refreshBody()
+            .setDepth(4);
+         block3.create(x + 30, u , 'block3')
+            .setScale(0.2)
+            .setOrigin(0, 1)
+            .refreshBody()
+            .setDepth(4);
+        };
+
+        if (i = 0) {
+            block1.create(x, u, 'block1')
+            .setScale(0.2)
+            .setOrigin(0, 1)
+            .refreshBody()
+            .setDepth(4);
+         block3.create(x + 30, u , 'block3')
+            .setScale(0.2)
+            .setOrigin(0, 1)
+            .refreshBody()
+            .setDepth(4);
+        };
+
+    };
     
 
     //Дерева
