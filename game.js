@@ -254,8 +254,8 @@ function update() {
 }
 
 function hitBomb(player, bomb) {
-    Lives = Lives - 1;
-    if(Lives = 0) {
+    Lives -= 1;
+    if(Lives <= 0) {
       GameOver = true;
       player.anims.play('turn');
       player.setTint(0xff0000);
