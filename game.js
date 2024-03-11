@@ -50,6 +50,8 @@ function preload() {
     this.load.image('block3', 'assets/block3.png');
     this.load.image('cloud1', 'assets/cloud1.png');
     this.load.image('cloud2', 'assets/cloud2.png');
+    this.load.image('hearta', 'assets/hearta.png');
+    this.load.image('heartb', 'assets/heartb.png');
 
 
     this.load.spritesheet('dude',
@@ -67,6 +69,24 @@ function create() {
        .setDepth(0);
     this.mode = 1; 
     this.directSpeed = 4.5;
+
+    //Життя
+    hearta = this.physics.add.staticGroup();
+    hearta.create(40, 100, 'hearta')
+           .setScale(2)
+           .setOrigin(0, 1)
+           .refreshBody()
+           .setDepth(5);
+    hearta.create(80, 100, 'hearta')
+           .setScale(2)
+           .setOrigin(0, 1)
+           .refreshBody()
+           .setDepth(5);
+    hearta.create(120, 100, 'hearta')
+           .setScale(2)
+           .setOrigin(0, 1)
+           .refreshBody()
+           .setDepth(5);
 
     //Кущі
     bush1 = this.physics.add.staticGroup();
@@ -89,80 +109,12 @@ function create() {
     };
 
     //блок3
-    block3 = this.physics.add.staticGroup();
-    block3.create(230, 400, 'block3')
-       .setScale(0.2)
-       .setOrigin(0, 1)
-       .refreshBody()
-       .setDepth(3);
-       
-    //Рандомні платформи
-    block1 = this.physics.add.staticGroup()
-    block2 = this.physics.add.staticGroup()
-    block3 = this.physics.add.staticGroup()
-    var j = (Phaser.Math.Between(400,800))
-    var i = (Phaser.Math.Between(1,3))
-    for (var x = 100; x < worldWidth; x = x + j) {
-        var u = (Phaser.Math.Between(600,800));
-        if (i = 2) {
-            block1.create(x, u, 'block1')
-            .setScale(0.2)
-            .setOrigin(0, 1)
-            .refreshBody()
-            .setDepth(4);
-            block2.create(x + 30, u, 'block2')
-            .setScale(0.2)
-            .setOrigin(0, 1)
-            .refreshBody()
-            .setDepth(4);
-
-         block3.create(x + 80, u , 'block3')
-            .setScale(0.2)
-            .setOrigin(0, 1)
-            .refreshBody()
-            .setDepth(4);
-        };
-
-        if (i = 3) {
-            block1.create(x, u, 'block1')
-            .setScale(0.2)
-            .setOrigin(0, 1)
-            .refreshBody()
-            .setDepth(4);
-            block2.create(x + 30, u, 'block2')
-            .setScale(0.2)
-            .setOrigin(0, 1)
-            .refreshBody()
-            .setDepth(4);
-
-            block2.create(x + 60, u, 'block2')
-            .setScale(0.2)
-            .setOrigin(0, 1)
-            .refreshBody()
-            .setDepth(4);
-
-         block3.create(x + 110, u , 'block3')
-            .setScale(0.2)
-            .setOrigin(0, 1)
-            .refreshBody()
-            .setDepth(4);
-        };
-
-        if (i = 1) {
-            block1.create(x, u, 'block1')
-            .setScale(0.2)
-            .setOrigin(0, 1)
-            .refreshBody()
-            .setDepth(4);
-         block3.create(x + 30, u , 'block3')
-            .setScale(0.2)
-            .setOrigin(0, 1)
-            .refreshBody()
-            .setDepth(4);
-        };
-
-    };
-    
+    //block3 = this.physics.add.staticGroup();
+    //block3.create(230, 400, 'block3')
+       //.setScale(0.2)
+       //.setOrigin(0, 1)
+       //.refreshBody()
+       //.setDepth(3);
 
     //Дерева
     tree = this.physics.add.staticGroup();
