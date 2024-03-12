@@ -260,8 +260,11 @@ function hitBomb(player, bomb) {
       player.anims.play('turn');
       player.setTint(0xff0000);
       this.physics.pause();
-      this.add.image(400, 300, 'result').setScale(0.5);
-    }
+      this.add.image(400, 300, 'result')
+      .setScale(0.5)
+      .setDepth(5)
+      .setScrollFactor(0);
+    };
 }
 //Функція збору зірок
 function collectStar(player, star) {
