@@ -7,7 +7,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: true
+            debug: false
         }
     },
     scene: {
@@ -159,7 +159,7 @@ function create() {
           .setOrigin(0, 0)
           .refreshBody()
           .setDepth(2);
-    }
+    };
  
     //Гравець
     player = this.physics.add.sprite(50, 150, 'dude');
@@ -167,6 +167,50 @@ function create() {
     player.setDepth(5);
     player.setCollideWorldBounds(false);
     player.body.setGravityY(400);
+
+    blocks = this.physics.add.staticGroup();
+
+    for (var x = 300; x < worldWidth; x = x + 700) {
+
+        var f = (Phaser.Math.Between(1, 3))
+        var yt = Phaser.Math.Between(700, 800);
+
+        blocks.create(x, yt, "block1")
+          .setScale(0.2)
+          .setOrigin(0, 0)
+          .refreshBody()
+          .setDepth(3);
+
+          for (var x = 330; x < Phaser.Math.Between(500, 600); x = x + 30) {
+            f = Phaser.Math.Between(1, 3);
+             blocks.create(x + 32 * f, yt, "block2")
+              .setScale(0.2)
+              .setOrigin(0, 0)
+              .refreshBody()
+              .setDepth(3)
+          }
+    };
+
+     // blocks.create(x = xt + 60, y = yt, "block3")
+        //   .setScale(0.2)
+        //   .setOrigin(0, 0)
+        //   .refreshBody()
+        //   .setDepth(3);
+
+        // var i;
+        // for (i = 1; i < Phaser.Math.Between(0, 5); i++) {
+        //   blocks.create(x + 30 * i, y, "block2")
+        //   .setScale(0.2)
+        //   .setOrigin(0, 0)
+        //   .refreshBody()
+        //   .setDepth(3);
+
+        //   blocks.create( x + 30 * i, "block3")
+        //   .setScale(0.2)
+        //   .setOrigin(0, 0)
+        //   .refreshBody()
+        //   .setDepth(3);
+        // }
 
 
     //Створення анімації
@@ -197,6 +241,8 @@ function create() {
 
     this.physics.add.collider(bombs, platforms);
     this.physics.add.collider(player, bombs, hitBomb, null, this);
+    this.physics.add.collider(player, blocks);
+    this.physics.add.collider(bombs, blocks);
 
 
     //Додаємо надпис рекорду
@@ -210,6 +256,7 @@ function create() {
 
     });
 
+    //коллізія для зірок
     this.physics.add.collider(stars, platforms);
     this.physics.add.overlap(player, stars, collectStar, null, this);
 
@@ -219,6 +266,7 @@ function create() {
         child.setDepth(5);
     });
 
+    //скрипт камери
     this.cameras.main.setBounds(0, 0, 10000, 1080);
     this.cameras.main.startFollow(player);
     this.cameras.main.setZoom(1.1);
