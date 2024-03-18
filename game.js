@@ -36,7 +36,6 @@ function preload() {
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('result', 'assets/result.png');
-    this.load.image('fon', 'assets/fon.png');
     this.load.image('bomb', 'assets/bomb.png');
     this.load.image('dirt', 'assets/dirt.png');
     this.load.image('platform2', 'assets/platform2.png');
@@ -58,7 +57,8 @@ function preload() {
         { frameWidth: 32, frameHeight: 48 }
     );
 }
-//Додаємо спрайти до сцени
+
+
 function create() {
 
     //Додаємо фон
@@ -111,14 +111,6 @@ function create() {
            .setDepth(1);
     };
 
-    //блок3
-    //block3 = this.physics.add.staticGroup();
-    //block3.create(230, 400, 'block3')
-       //.setScale(0.2)
-       //.setOrigin(0, 1)
-       //.refreshBody()
-       //.setDepth(3);
-
     //Дерева
     tree = this.physics.add.staticGroup();
     for (var x = 0; x < worldWidth; x = x + (Phaser.Math.Between(500, 1000))) {
@@ -160,6 +152,8 @@ function create() {
           .refreshBody()
           .setDepth(2);
     };
+
+
  
     //Гравець
     player = this.physics.add.sprite(50, 150, 'dude');
@@ -168,50 +162,33 @@ function create() {
     player.setCollideWorldBounds(false);
     player.body.setGravityY(400);
 
+    var x = 0;
     blocks = this.physics.add.staticGroup();
-
-    for (var x = 300; x < worldWidth; x = x + 700) {
-
-        var f = (Phaser.Math.Between(1, 3))
-        var yt = Phaser.Math.Between(700, 800);
-
-        blocks.create(x, yt, "block1")
-          .setScale(0.2)
+        while (x < worldWidth) {
+            x += Phaser.Math.Between(500, 600); // Додаємо випадкову відстань до x для наступної платформи
+            var y = Phaser.Math.Between(650, 800);
+    
+            blocks.create(x, y, 'block1')
+         .setScale(0.3)
           .setOrigin(0, 0)
           .refreshBody()
           .setDepth(3);
+    
+            var i;
+            for (i = 1; i <= Phaser.Math.Between(1, 5); i++) {
+               blocks.create(x + 50 * i, y, 'block2')
+          .setScale(0.3)
+          .setOrigin(0, 0)
+          .refreshBody()
+          .setDepth(3);
+            }
 
-          for (var x = 330; x < Phaser.Math.Between(500, 600); x = x + 30) {
-            f = Phaser.Math.Between(1, 3);
-             blocks.create(x + 32 * f, yt, "block2")
-              .setScale(0.2)
-              .setOrigin(0, 0)
-              .refreshBody()
-              .setDepth(3)
-          }
+            blocks.create(x + 65 * i, y, 'block3')
+            .setScale(0.3)
+            .setOrigin(0, 0)
+            .refreshBody()
+            .setDepth(3);
     };
-
-     // blocks.create(x = xt + 60, y = yt, "block3")
-        //   .setScale(0.2)
-        //   .setOrigin(0, 0)
-        //   .refreshBody()
-        //   .setDepth(3);
-
-        // var i;
-        // for (i = 1; i < Phaser.Math.Between(0, 5); i++) {
-        //   blocks.create(x + 30 * i, y, "block2")
-        //   .setScale(0.2)
-        //   .setOrigin(0, 0)
-        //   .refreshBody()
-        //   .setDepth(3);
-
-        //   blocks.create( x + 30 * i, "block3")
-        //   .setScale(0.2)
-        //   .setOrigin(0, 0)
-        //   .refreshBody()
-        //   .setDepth(3);
-        // }
-
 
     //Створення анімації
     this.anims.create({
@@ -301,6 +278,7 @@ function update() {
     }
 }
 
+
 function hitBomb(player, bomb) {
     Lives -= 1;
     if(Lives <= 0) {
@@ -314,6 +292,8 @@ function hitBomb(player, bomb) {
       .setScrollFactor(0);
     };
 }
+
+
 //Функція збору зірок
 function collectStar(player, star) {
     star.disableBody(true, true);
@@ -324,10 +304,6 @@ function collectStar(player, star) {
 
     var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-    var bomb = bombs.create(x, 16, 'bomb');
-    bomb.setBounce(1);
-    bomb.setCollideWorldBounds(true);
-    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
     var bomb = bombs.create(x, 16, 'bomb');
     bomb.setBounce(1);
     bomb.setCollideWorldBounds(true);
