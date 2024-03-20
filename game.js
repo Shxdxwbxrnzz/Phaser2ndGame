@@ -50,6 +50,7 @@ function preload() {
     this.load.image('cloud2', 'assets/cloud2.png');
     this.load.image('hearta', 'assets/hearta.png');
     this.load.image('heartb', 'assets/heartb.png');
+    this.load.image('enemy', 'assets/enemy.png');
 
 
     this.load.spritesheet('dude',
@@ -157,37 +158,56 @@ function create() {
  
     //Гравець
     player = this.physics.add.sprite(50, 150, 'dude');
-    player.setBounce(0.2);
+    player.setBounce(0);
     player.setDepth(5);
     player.setCollideWorldBounds(false);
-    player.body.setGravityY(400);
+    player.body.setGravityY(200);
 
+    // //Ворог
+    //    enemy = this.physics.add.sprite(500, 600, 'enemy');
+    //    enemy.setBounce(0);
+    //    enemy.setDepth(5);
+    //    enemy.setScale(0.1);
+    //    enemy.setCollideWorldBounds(false);
+    //    enemy.body.setGravityY(200);
+
+    //Випадкова генерація платформ
     var x = 0;
+    var ystrt = 800;
+    var yt = Phaser.Math.Between(650, 800);
+    stars = this.physics.add.staticGroup();
     blocks = this.physics.add.staticGroup();
         while (x < worldWidth) {
-            x += Phaser.Math.Between(500, 600); // Додаємо випадкову відстань до x для наступної платформи
-            var y = Phaser.Math.Between(650, 800);
+
+        x += Phaser.Math.Between(500, 600); // Додаємо випадкову відстань до x для наступної платформи
     
-            blocks.create(x, y, 'block1')
-         .setScale(0.3)
+        blocks.create(x, yt, 'block1')
+          .setScale(0.3)
+          .setOrigin(0, 0)
+          .refreshBody()
+          .setDepth(3);
+
+        stars.create(x + 120, yt - 40, 'star')
+          .setScale(0.08)
           .setOrigin(0, 0)
           .refreshBody()
           .setDepth(3);
     
             var i;
             for (i = 1; i <= Phaser.Math.Between(1, 5); i++) {
-               blocks.create(x + 50 * i, y, 'block2')
+        blocks.create(x + 50 * i, yt, 'block2')
           .setScale(0.3)
           .setOrigin(0, 0)
           .refreshBody()
           .setDepth(3);
             }
 
-            blocks.create(x + 65 * i, y, 'block3')
-            .setScale(0.3)
-            .setOrigin(0, 0)
-            .refreshBody()
-            .setDepth(3);
+        blocks.create(x + 65 * i, yt, 'block3')
+          .setScale(0.3)
+          .setOrigin(0, 0)
+          .refreshBody()
+          .setDepth(3);
+
     };
 
     //Створення анімації
@@ -221,24 +241,17 @@ function create() {
     this.physics.add.collider(player, blocks);
     this.physics.add.collider(bombs, blocks);
 
-
-    //Додаємо надпис рекорду
-    scoreText = this.add.text(16, 16, 'Level: 0', { fontSize: '32px', fill: '#000' });
-
-
-    stars = this.physics.add.group({
-        key: 'star',
-        repeat: 11,
-        setXY: { x: 12, y: 0, stepX: 70 }
-
-    });
-
-    //коллізія для зірок
+    //Коллізія для зірок
     this.physics.add.collider(stars, platforms);
+    this.physics.add.collider(stars, blocks);
     this.physics.add.overlap(player, stars, collectStar, null, this);
 
+
+    //Додаємо надпис рівня
+    //scoreText = this.add.text(16, 16, 'Level: 0', { fontSize: '32px', fill: '#000' });
+
+    //Поява нових зірок
     stars.children.iterate(function (child) {
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
         child.setScale(0.08, 0.08);
         child.setDepth(5);
     });
@@ -247,9 +260,7 @@ function create() {
     this.cameras.main.setBounds(0, 0, 10000, 1080);
     this.cameras.main.startFollow(player);
     this.cameras.main.setZoom(1.1);
-
 }
-
 
 function update() {
     //Додаємо керування гравцем
@@ -272,15 +283,17 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(-520);
     }
+
     //Обмежує випадання за світ
     if(player.x < 20){
         player.x = 20
     }
 }
 
-
+//Функція доторкання до бомб
 function hitBomb(player, bomb) {
     Lives -= 1;
+    bomb.disableBody(true, true);
     if(Lives <= 0) {
       GameOver = true;
       player.anims.play('turn');
@@ -297,28 +310,15 @@ function hitBomb(player, bomb) {
 //Функція збору зірок
 function collectStar(player, star) {
     star.disableBody(true, true);
-    if (stars.countActive(true) === 0) {
-        score += 1;
-        scoreText.setText('Level: ' + score);
-    }
 
     var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
     var bomb = bombs.create(x, 16, 'bomb');
     bomb.setBounce(1);
-    bomb.setCollideWorldBounds(true);
+    bomb.setCollideWorldBounds(false);
     bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
 
     if (stars.countActive(true) === 0) {
-        stars.children.iterate(function (child) {
-
-            child.enableBody(true, child.x, 0, true, true);
-
-        });
-      
-
-
-
     }
 
 }
