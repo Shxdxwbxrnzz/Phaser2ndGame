@@ -70,28 +70,29 @@ function create() {
     this.mode = 1; 
     this.directSpeed = 4.5;
 
-    //Життя
-    hearta = this.physics.add.staticGroup();
-    hearta.create(100, 130, 'hearta')
-           .setScale(2)
-           .setOrigin(0, 1)
-           .refreshBody()
-           .setDepth(5)
-           .setScrollFactor(0);
-    hearta.create(140, 130, 'hearta')
-           .setScale(2)
-           .setOrigin(0, 1)
-           .refreshBody()
-           .setDepth(5)
-           .setScrollFactor(0);
-    hearta.create(180, 130, 'hearta')
-           .setScale(2)
-           .setOrigin(0, 1)
-           .refreshBody()
-           .setDepth(5)
-           .setScrollFactor(0);
+    // //Життя
+    // heart1 = this.physics.add.staticGroup();
+    // heart1.create(100, 130, 'hearta')
+    //        .setScale(2)
+    //        .setOrigin(0, 1)
+    //        .refreshBody()
+    //        .setDepth(5)
+    //        .setScrollFactor(0);
+    // heart2 = this.physics.add.staticGroup();
+    // heart2.create(140, 130, 'hearta')
+    //        .setScale(2)
+    //        .setOrigin(0, 1)
+    //        .refreshBody()
+    //        .setDepth(5)
+    //        .setScrollFactor(0);
+    // heart3 = this.physics.add.staticGroup();
+    // heart3.create(180, 130, 'hearta')
+    //        .setScale(2)
+    //        .setOrigin(0, 1)
+    //        .refreshBody()
+    //        .setDepth(5)
+    //        .setScrollFactor(0);
     
-
     //Кущі
     bush1 = this.physics.add.staticGroup();
     for (var x = 0; x < worldWidth; x = x + (Phaser.Math.Between(200,400))) {
@@ -103,9 +104,9 @@ function create() {
     };
 
     //Хмари 
-    cloud1 = this.physics.add.staticGroup();
+    cloud = this.physics.add.staticGroup();
     for (var x = 0; x < worldWidth; x = x + (Phaser.Math.Between(200,400))) {
-        cloud1.create(x, (Phaser.Math.Between(300,550)), 'cloud1')
+        cloud.create(x, (Phaser.Math.Between(300,550)), 'cloud1')
            .setScale(0.2)
            .setOrigin(0, 1)
            .refreshBody()
@@ -164,12 +165,12 @@ function create() {
     player.body.setGravityY(200);
 
     // //Ворог
-    //    enemy = this.physics.add.sprite(500, 600, 'enemy');
-    //    enemy.setBounce(0);
-    //    enemy.setDepth(5);
-    //    enemy.setScale(0.1);
-    //    enemy.setCollideWorldBounds(false);
-    //    enemy.body.setGravityY(200);
+       enemy = this.physics.add.sprite(500, 600, 'enemy');
+       enemy.setBounce(0);
+       enemy.setDepth(5);
+       enemy.setScale(0.1);
+       enemy.setCollideWorldBounds(false);
+       enemy.body.setGravityY(200);
 
     //Випадкова генерація платформ
     var x = 0;
@@ -234,6 +235,8 @@ function create() {
     //Додаємо коллізію гравцю та об'єктам
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(player, dirt);
+    this.physics.add.collider(enemy, platforms);
+    this.physics.add.collider(enemy, player);
     bombs = this.physics.add.group();
 
     this.physics.add.collider(bombs, platforms);
@@ -247,8 +250,8 @@ function create() {
     this.physics.add.overlap(player, stars, collectStar, null, this);
 
 
-    //Додаємо надпис рівня
-    //scoreText = this.add.text(16, 16, 'Level: 0', { fontSize: '32px', fill: '#000' });
+    //Додаємо надпис очок
+    // scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
 
     //Поява нових зірок
     stars.children.iterate(function (child) {
@@ -260,6 +263,11 @@ function create() {
     this.cameras.main.setBounds(0, 0, 10000, 1080);
     this.cameras.main.startFollow(player);
     this.cameras.main.setZoom(1.1);
+
+    // lifeText = this.add.text(1500, 50, showTextSymbols('❤️', life), {fontSize: '40px', fill: '#FFF'})
+    //     .setOrigin(0, 0)
+    //     .setScrollFactor(0)
+
 }
 
 function update() {
@@ -287,7 +295,8 @@ function update() {
     //Обмежує випадання за світ
     if(player.x < 20){
         player.x = 20
-    }
+    };
+
 }
 
 //Функція доторкання до бомб
@@ -310,13 +319,14 @@ function hitBomb(player, bomb) {
 //Функція збору зірок
 function collectStar(player, star) {
     star.disableBody(true, true);
+    score +=1;
 
-    var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+    var x = (player.x );
 
     var bomb = bombs.create(x, 16, 'bomb');
     bomb.setBounce(1);
     bomb.setCollideWorldBounds(false);
-    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    bomb.setVelocity(Phaser.Math.Between(100, 500), 40);
 
     if (stars.countActive(true) === 0) {
     }
