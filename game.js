@@ -63,35 +63,12 @@ function preload() {
 function create() {
 
     //Додаємо фон
-    this.add.tileSprite(0, 0, worldWidth, worldHeight, 'sky')
+    this.add.tileSprite(0, 0, 11000, worldHeight, 'sky')
        .setScale(1)
        .setOrigin(0,0)
        .setDepth(0);
     this.mode = 1; 
     this.directSpeed = 4.5;
-
-    // //Життя
-    // heart1 = this.physics.add.staticGroup();
-    // heart1.create(100, 130, 'hearta')
-    //        .setScale(2)
-    //        .setOrigin(0, 1)
-    //        .refreshBody()
-    //        .setDepth(5)
-    //        .setScrollFactor(0);
-    // heart2 = this.physics.add.staticGroup();
-    // heart2.create(140, 130, 'hearta')
-    //        .setScale(2)
-    //        .setOrigin(0, 1)
-    //        .refreshBody()
-    //        .setDepth(5)
-    //        .setScrollFactor(0);
-    // heart3 = this.physics.add.staticGroup();
-    // heart3.create(180, 130, 'hearta')
-    //        .setScale(2)
-    //        .setOrigin(0, 1)
-    //        .refreshBody()
-    //        .setDepth(5)
-    //        .setScrollFactor(0);
     
     //Кущі
     bush1 = this.physics.add.staticGroup();
@@ -135,7 +112,7 @@ function create() {
 
     //Земля і трава
     platforms = this.physics.add.staticGroup();
-    for (var x = 0; x < worldWidth; x = x + 120) {
+    for (var x = 0; x < 11000; x = x + 120) {
         console.log(x)
        platforms.create(x, 930, 'ground')
           .setScale(0.2)
@@ -146,7 +123,7 @@ function create() {
 
     //Земля нижче трави
     dirt = this.physics.add.staticGroup();
-    for (var x = 0; x < worldWidth; x = x + 500) {
+    for (var x = 0; x < 11000; x = x + 500) {
         console.log(x)
        dirt.create(x, 950, 'dirt')
           .setScale(1.8)
@@ -154,8 +131,6 @@ function create() {
           .refreshBody()
           .setDepth(2);
     };
-
-
  
     //Гравець
     player = this.physics.add.sprite(50, 150, 'dude');
@@ -164,7 +139,7 @@ function create() {
     player.setCollideWorldBounds(false);
     player.body.setGravityY(200);
 
-    // //Ворог
+     //Ворог
        enemy = this.physics.add.sprite(500, 600, 'enemy');
        enemy.setBounce(0);
        enemy.setDepth(5);
@@ -173,15 +148,20 @@ function create() {
        enemy.body.setGravityY(200);
 
     //Випадкова генерація платформ
-    var x = 0;
-    var ystrt = 800;
-    var yt = Phaser.Math.Between(650, 800);
+    platforms.create(550, 800, 'platform2')
+    .setScale(0.3)
+    .setOrigin(0, 0)
+    .refreshBody()
+    .setDepth(3);
+    var x = 400;
+    var x2 = 600;
+    var yd = 800;
     stars = this.physics.add.staticGroup();
     blocks = this.physics.add.staticGroup();
         while (x < worldWidth) {
-
+        var yt = Phaser.Math.Between(500, 600);
         x += Phaser.Math.Between(500, 600); // Додаємо випадкову відстань до x для наступної платформи
-    
+        x2 += Phaser.Math.Between(500, 600);
         blocks.create(x, yt, 'block1')
           .setScale(0.3)
           .setOrigin(0, 0)
@@ -209,6 +189,37 @@ function create() {
           .refreshBody()
           .setDepth(3);
 
+
+        blocks.create(x2, yd, 'block1')
+          .setScale(0.3)
+          .setOrigin(0, 0)
+          .refreshBody()
+          .setDepth(3);
+
+        var f;
+          for (f = 1; f <= Phaser.Math.Between(1, 5); f++) {
+        blocks.create(x2 + 50 * f, yd, 'block2')
+          .setScale(0.3)
+          .setOrigin(0, 0)
+          .refreshBody()
+          .setDepth(3);
+          }
+
+        blocks.create(x2 + 65 * f, yd, 'block3')
+          .setScale(0.3)
+          .setOrigin(0, 0)
+          .refreshBody()
+          .setDepth(3);
+    };
+
+
+    //Зірки
+    for (var x = 800; x < worldWidth; x = x + (Phaser.Math.Between(500, 1000))) {
+        stars.create(x, 890, 'star')
+           .setScale(0.08)
+           .setOrigin(0, 1)
+           .refreshBody()
+           .setDepth(3);
     };
 
     //Створення анімації
@@ -231,6 +242,9 @@ function create() {
         frameRate: 10,
         repeat: -1
     });
+
+    //Надпис із життями
+    livesText = this.add.text(1600, 120, 'Life' + showLife(), {fontSize: '32px', fill: '#FFF'}).setScrollFactor(0);
 
     //Додаємо коллізію гравцю та об'єктам
     this.physics.add.collider(player, platforms);
@@ -260,13 +274,9 @@ function create() {
     });
 
     //скрипт камери
-    this.cameras.main.setBounds(0, 0, 10000, 1080);
+    this.cameras.main.setBounds(0, 0, 15000, 1080);
     this.cameras.main.startFollow(player);
     this.cameras.main.setZoom(1.1);
-
-    // lifeText = this.add.text(1500, 50, showTextSymbols('❤️', life), {fontSize: '40px', fill: '#FFF'})
-    //     .setOrigin(0, 0)
-    //     .setScrollFactor(0)
 
 }
 
@@ -303,6 +313,7 @@ function update() {
 function hitBomb(player, bomb) {
     Lives -= 1;
     bomb.disableBody(true, true);
+    updateLivesDisplay();
     if(Lives <= 0) {
       GameOver = true;
       player.anims.play('turn');
@@ -316,15 +327,30 @@ function hitBomb(player, bomb) {
 }
 
 
+//Оновлення життів
+function updateLivesDisplay(){
+    if (livesText) {
+        livesText.setText('Life' + showLife());
+    }
+}
+function showLife(){
+    var lifeLine = ''
+
+    for (var i = 0; i < Lives; i++) {
+        lifeLine += '❤️'
+    }
+    return lifeLine
+    }
+
 //Функція збору зірок
 function collectStar(player, star) {
     star.disableBody(true, true);
     score +=1;
 
-    var x = (player.x );
+    var x = (player.x - 100);
 
-    var bomb = bombs.create(x, 16, 'bomb');
-    bomb.setBounce(1);
+    var bomb = bombs.create(x, 16, 'bomb').setDepth(3);
+    bomb.setBounce(0.8);
     bomb.setCollideWorldBounds(false);
     bomb.setVelocity(Phaser.Math.Between(100, 500), 40);
 
