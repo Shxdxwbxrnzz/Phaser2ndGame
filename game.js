@@ -274,7 +274,7 @@ function create() {
     });
 
     //скрипт камери
-    this.cameras.main.setBounds(0, 0, 15000, 1080);
+    this.cameras.main.setBounds(0, 0, 11000, 1080);
     this.cameras.main.startFollow(player);
     this.cameras.main.setZoom(1.1);
 
