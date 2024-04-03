@@ -48,9 +48,8 @@ function preload() {
     this.load.image('block3', 'assets/block3.png');
     this.load.image('cloud1', 'assets/cloud1.png');
     this.load.image('cloud2', 'assets/cloud2.png');
-    this.load.image('hearta', 'assets/hearta.png');
-    this.load.image('heartb', 'assets/heartb.png');
     this.load.image('enemy', 'assets/enemy.png');
+    this.load.image('flag', 'assets/flag.png');
 
 
     this.load.spritesheet('dude',
@@ -221,6 +220,14 @@ function create() {
            .refreshBody()
            .setDepth(3);
     };
+    
+    //Кінець
+    flag = this.physics.add.staticGroup();
+           flag.create(10500, 890, 'flag')
+           .setScale(0.5)
+           .setOrigin(0, 1)
+           .refreshBody()
+           .setDepth(3);
 
     //Створення анімації
     this.anims.create({
@@ -345,7 +352,12 @@ function showLife(){
 //Функція збору зірок
 function collectStar(player, star) {
     star.disableBody(true, true);
-    score +=1;
+    // score +=1;
+    // scoreText.setText('Level: ' + score);
+    var win = 0;
+    if (stars.countActive(true) === 0) {
+        win = 1;
+        }
 
     var x = (player.x - 100);
 
@@ -353,8 +365,5 @@ function collectStar(player, star) {
     bomb.setBounce(0.8);
     bomb.setCollideWorldBounds(false);
     bomb.setVelocity(Phaser.Math.Between(100, 500), 40);
-
-    if (stars.countActive(true) === 0) {
-    }
 
 }
