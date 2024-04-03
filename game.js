@@ -138,7 +138,7 @@ function create() {
     player.setCollideWorldBounds(false);
     player.body.setGravityY(200);
 
-     //Ворог
+    //Ворог
        enemy = this.physics.add.sprite(500, 600, 'enemy');
        enemy.setBounce(0);
        enemy.setDepth(5);
@@ -220,7 +220,7 @@ function create() {
            .refreshBody()
            .setDepth(3);
     };
-    
+
     //Кінець
     flag = this.physics.add.staticGroup();
            flag.create(10500, 890, 'flag')
@@ -313,6 +313,9 @@ function update() {
     if(player.x < 20){
         player.x = 20
     };
+    if(player.x > 11000){
+        player.x = 11000
+    };
 
 }
 
@@ -326,13 +329,12 @@ function hitBomb(player, bomb) {
       player.anims.play('turn');
       player.setTint(0xff0000);
       this.physics.pause();
-      this.add.image(400, 300, 'result')
+      this.add.image(player.x, 300, 'result')
       .setScale(0.5)
       .setDepth(5)
       .setScrollFactor(0);
     };
 }
-
 
 //Оновлення життів
 function updateLivesDisplay(){
@@ -367,3 +369,12 @@ function collectStar(player, star) {
     bomb.setVelocity(Phaser.Math.Between(100, 500), 40);
 
 }
+
+function hitFlag(player, flag) {
+    if(win = 1){
+    flag.disableBody(true, true)}
+      GameOver = true;
+      player.anims.play('turn');
+      player.setTint(0xff0000);
+      this.physics.pause();
+};
